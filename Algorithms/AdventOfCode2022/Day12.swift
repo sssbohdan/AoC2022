@@ -66,44 +66,24 @@ enum AoCDay12 {
         let startIndex = flattenRows.firstIndex(of: "S")!
         let startPoint = indexToPoint(startIndex, columns: columns)
         let currentPoint = startPoint
-        var possibleRoutes = goDown(.init(path: .init(), foundPivot: false, currentPoint: currentPoint), matrix: &matrix)
-        var shortest: RouteData?
-        while !possibleRoutes.isEmpty {
-            let r = popTheShortest(&possibleRoutes, final: &shortest)
-
-            if shortest != nil {
+        var queue = Queue(arr: goDown(
+            .init(path: .init(),
+                  foundPivot: false,
+                  currentPoint: currentPoint),
+            matrix: &matrix))
+        while let r = queue.dequeue() {
+            if r.foundPivot {
                 print("-----------------------")
-                printShortestRoute(shortest!.path, matrix: matrix)
+                printShortestRoute(r.path, matrix: matrix)
                 print("-----------------------")
-                print("\(shortest!.path.count - 1)")
-                return shortest!.path.count - 1
+                print("\(r.path.count)")
+                return r.path.count
             }
 
-            let possibles = goDown(r, matrix: &matrix)
-            possibleRoutes.append(contentsOf: possibles)
+            queue.enqueue(goDown(r, matrix: &matrix))
         }
 
         fatalError()
-    }
-
-    static func popTheShortest(_ arr: inout [RouteData], final: inout RouteData?) -> RouteData {
-        let shortest = Int.max
-        var shortestRoute: RouteData?
-        var shortestIndex: Int?
-
-        for (index, route) in arr.enumerated() {
-            if route.foundPivot {
-                final = route
-            }
-            if route.path.count < shortest {
-                shortestRoute = route
-                shortestIndex = index
-            }
-        }
-
-        arr.remove(at: shortestIndex!)
-
-        return shortestRoute!
     }
 
     static func goDown(_ routeData: RouteData, matrix: inout [[Character]]) -> [RouteData] {

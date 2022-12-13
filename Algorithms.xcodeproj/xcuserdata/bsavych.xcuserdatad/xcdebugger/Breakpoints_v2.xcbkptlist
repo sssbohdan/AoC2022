@@ -23,20 +23,20 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852"
+            uuid = "FDDFC1AA-EC4D-43AB-B2EE-6F19F4FED793"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Algorithms/AdventOfCode2022/Day12.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "solve()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852 - 55123015545b7906"
+                  uuid = "FDDFC1AA-EC4D-43AB-B2EE-6F19F4FED793 - 55123015545b79e7"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -46,12 +46,12 @@
                   urlString = "file:///Users/bsavych/Developer/AoC2022/Algorithms/AdventOfCode2022/Day12.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "79"
-                  endingLineNumber = "79"
-                  offsetFromSymbolStart = "2764">
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "2504">
                </Location>
                <Location
-                  uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852 - 55123015545b7906"
+                  uuid = "FDDFC1AA-EC4D-43AB-B2EE-6F19F4FED793 - 55123015545b79e7"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
@@ -61,9 +61,9 @@
                   urlString = "file:///Users/bsavych/Developer/AoC2022/Algorithms/AdventOfCode2022/Day12.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "79"
-                  endingLineNumber = "79"
-                  offsetFromSymbolStart = "2924">
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "2560">
                </Location>
             </Locations>
          </BreakpointContent>
