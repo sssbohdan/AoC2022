@@ -20,5 +20,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Algorithms/AdventOfCode2022/Day12.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "solve()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852 - 55123015545b7906"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Algorithms.AoCDay12.solve() -&gt; Swift.Int"
+                  moduleName = "Algorithms"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/bsavych/Developer/AoC2022/Algorithms/AdventOfCode2022/Day12.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79"
+                  offsetFromSymbolStart = "2764">
+               </Location>
+               <Location
+                  uuid = "8D690B0F-E20E-464D-AA5B-9E9087194852 - 55123015545b7906"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static Algorithms.AoCDay12.solve() -&gt; Swift.Int"
+                  moduleName = "Algorithms"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/bsavych/Developer/AoC2022/Algorithms/AdventOfCode2022/Day12.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79"
+                  offsetFromSymbolStart = "2924">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

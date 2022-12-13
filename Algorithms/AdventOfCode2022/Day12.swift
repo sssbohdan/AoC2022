@@ -14,6 +14,12 @@ enum AoCDay12 {
         var x: Int
         var y: Int
     }
+
+    struct RouteData {
+        let path: IndexSet
+        let foundPivot: Bool
+        let currentPoint: Point
+    }
     static let alphabet = "a b c d e f g h i j k l m n o p q r s t u v w x y z"
     static let alphabetValues: [Character: Int] = [
         "S": 0,
@@ -48,7 +54,6 @@ enum AoCDay12 {
 
     static var rows = 0
     static var columns = 0
-    static var allRoutes = [IndexSet]()
 
     static func solve() -> Int {
         var matrix = input
@@ -61,33 +66,67 @@ enum AoCDay12 {
         let startIndex = flattenRows.firstIndex(of: "S")!
         let startPoint = indexToPoint(startIndex, columns: columns)
         let currentPoint = startPoint
-        goDown(currentPoint: currentPoint, matrix: &matrix, currentPath: .init(integer: startIndex))
+        var possibleRoutes = goDown(.init(path: .init(), foundPivot: false, currentPoint: currentPoint), matrix: &matrix)
+        var shortest: RouteData?
+        while !possibleRoutes.isEmpty {
+            let r = popTheShortest(&possibleRoutes, final: &shortest)
 
-        let shortest = self.allRoutes.min(by: { $0.count < $1.count })!
-        print("-----------------------")
-        printShortestRoute(shortest, matrix: matrix)
-        print("-----------------------")
-        print("\(shortest.count - 1)")
+            if shortest != nil {
+                print("-----------------------")
+                printShortestRoute(shortest!.path, matrix: matrix)
+                print("-----------------------")
+                print("\(shortest!.path.count - 1)")
+                return shortest!.path.count - 1
+            }
 
-        return shortest.count - 1
+            let possibles = goDown(r, matrix: &matrix)
+            possibleRoutes.append(contentsOf: possibles)
+        }
+
+        fatalError()
     }
 
-    static func goDown(currentPoint: Point, matrix: inout [[Character]], currentPath: IndexSet) -> Void {
+    static func popTheShortest(_ arr: inout [RouteData], final: inout RouteData?) -> RouteData {
+        let shortest = Int.max
+        var shortestRoute: RouteData?
+        var shortestIndex: Int?
+
+        for (index, route) in arr.enumerated() {
+            if route.foundPivot {
+                final = route
+            }
+            if route.path.count < shortest {
+                shortestRoute = route
+                shortestIndex = index
+            }
+        }
+
+        arr.remove(at: shortestIndex!)
+
+        return shortestRoute!
+    }
+
+    static func goDown(_ routeData: RouteData, matrix: inout [[Character]]) -> [RouteData] {
+        let currentPoint = routeData.currentPoint
+        let currentPath = routeData.path
         let currentLetter = matrix[currentPoint.x][currentPoint.y]
         let currentLetterValue = alphabetValues[currentLetter] ?? 0
-        if currentLetter == "E" { allRoutes.append(currentPath); return; }
 
         let canGoUp = currentPoint.x - 1 >= 0
         ? alphabetValues[matrix[currentPoint.x - 1][currentPoint.y]]! - 1 <= currentLetterValue
         : false
+
+       var routes = [RouteData]()
 
         if
             canGoUp,
             !currentPath.contains(pointToIndex(Point(x: currentPoint.x - 1, y: currentPoint.y), columns: columns)) {
             let point = Point(x: currentPoint.x - 1, y: currentPoint.y)
             var currentPath = currentPath
+            let letter = matrix[point.x][point.y]
             currentPath.insert(pointToIndex(point, columns: columns))
-            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
+            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
+            routes.append(data)
         }
 
         let canGoRight = currentPoint.y + 1 < columns
@@ -99,8 +138,10 @@ enum AoCDay12 {
             !currentPath.contains(pointToIndex(Point(x: currentPoint.x, y: currentPoint.y + 1), columns: columns)) {
             let point = Point(x: currentPoint.x, y: currentPoint.y + 1)
             var currentPath = currentPath
+            let letter = matrix[point.x][point.y]
             currentPath.insert(pointToIndex(point, columns: columns))
-            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
+            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
+            routes.append(data)
         }
 
         let canGoDown = currentPoint.x + 1 < rows
@@ -112,22 +153,27 @@ enum AoCDay12 {
             !currentPath.contains(pointToIndex(Point(x: currentPoint.x + 1, y: currentPoint.y), columns: columns)) {
             let point = Point(x: currentPoint.x + 1, y: currentPoint.y)
             var currentPath = currentPath
+            let letter = matrix[point.x][point.y]
             currentPath.insert(pointToIndex(point, columns: columns))
-            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
-        }
+            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
+            routes.append(data)        }
 
         let canGoLeft = currentPoint.y - 1 >= 0
-            ? alphabetValues[matrix[currentPoint.x][currentPoint.y - 1]]! - 1 <= currentLetterValue
-            : false
+        ? alphabetValues[matrix[currentPoint.x][currentPoint.y - 1]]! - 1 <= currentLetterValue
+        : false
 
         if
             canGoLeft,
             !currentPath.contains(pointToIndex(Point(x: currentPoint.x , y: currentPoint.y - 1), columns: columns)) {
             let point = Point(x: currentPoint.x, y: currentPoint.y - 1)
             var currentPath = currentPath
+            let letter = matrix[point.x][point.y]
             currentPath.insert(pointToIndex(point, columns: columns))
-            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
+            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
+            routes.append(data)
         }
+
+        return routes
     }
 
     static func indexToPoint(_ index: Int, columns: Int) -> Point {
