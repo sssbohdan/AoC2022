@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+// TODO: Fix with Deykstra alg
 enum AoCDay12 {
     struct Point {
         var x: Int
@@ -14,6 +16,7 @@ enum AoCDay12 {
     }
     static let alphabet = "a b c d e f g h i j k l m n o p q r s t u v w x y z"
     static let alphabetValues: [Character: Int] = [
+        "S": 0,
         "a": 1,
         "b": 2,
         "c": 3,
@@ -40,70 +43,91 @@ enum AoCDay12 {
         "x": 24,
         "y": 25,
         "z": 26,
+        "E": 27
     ]
 
     static var rows = 0
     static var columns = 0
+    static var allRoutes = [IndexSet]()
 
-    static func solve() -> Point {
-        let matrix = testInput
+    static func solve() -> Int {
+        var matrix = input
             .split(separator: "\n")
             .map { Array(String($0)) }
         self.rows = matrix.count
         self.columns = matrix.first!.count
 
         let flattenRows = matrix.flatMap { $0 }
-        var startIndex = flattenRows.firstIndex(of: "S")!
-        let finishIndex = flattenRows.firstIndex(of: "E")!
-        var startPoint = indexToPoint(startIndex, columns: columns)
-        var currentPoint = startPoint
-        let finishPoint = indexToPoint(finishIndex, columns: columns)
+        let startIndex = flattenRows.firstIndex(of: "S")!
+        let startPoint = indexToPoint(startIndex, columns: columns)
+        let currentPoint = startPoint
+        goDown(currentPoint: currentPoint, matrix: &matrix, currentPath: .init(integer: startIndex))
 
-        while true {
+        let shortest = self.allRoutes.min(by: { $0.count < $1.count })!
+        print("-----------------------")
+        printShortestRoute(shortest, matrix: matrix)
+        print("-----------------------")
+        print("\(shortest.count - 1)")
 
-        }
+        return shortest.count - 1
     }
 
-    static func step(currentPoint: Point, matrix: inout [[Character]]) -> ([Point], Bool) {
+    static func goDown(currentPoint: Point, matrix: inout [[Character]], currentPath: IndexSet) -> Void {
         let currentLetter = matrix[currentPoint.x][currentPoint.y]
-        let currentLetterValue = alphabetValues[currentLetter] ?? Int.max
-        if currentLetter == "E" { return ([], true) }
-        if currentLetter == "S" { return ([], false) } // handle
-        var points = [Point]()
+        let currentLetterValue = alphabetValues[currentLetter] ?? 0
+        if currentLetter == "E" { allRoutes.append(currentPath); return; }
+
+        let canGoUp = currentPoint.x - 1 >= 0
+        ? alphabetValues[matrix[currentPoint.x - 1][currentPoint.y]]! - 1 <= currentLetterValue
+        : false
+
+        if
+            canGoUp,
+            !currentPath.contains(pointToIndex(Point(x: currentPoint.x - 1, y: currentPoint.y), columns: columns)) {
+            let point = Point(x: currentPoint.x - 1, y: currentPoint.y)
+            var currentPath = currentPath
+            currentPath.insert(pointToIndex(point, columns: columns))
+            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
+        }
 
         let canGoRight = currentPoint.y + 1 < columns
         ? alphabetValues[matrix[currentPoint.x][currentPoint.y + 1]]! - 1 <= currentLetterValue
         : false
 
-        if canGoRight {
-            points.append(Point(x: currentPoint.x, y: currentPoint.y + 1))
-        }
-
-        let canGoLeft = currentPoint.y - 1 >= 0
-            ? alphabetValues[matrix[currentPoint.x][currentPoint.y - 1]]! - 1 <= currentLetterValue
-            : false
-
-        if canGoLeft {
-            points.append(Point(x: currentPoint.x, y: currentPoint.y - 1))
+        if
+            canGoRight,
+            !currentPath.contains(pointToIndex(Point(x: currentPoint.x, y: currentPoint.y + 1), columns: columns)) {
+            let point = Point(x: currentPoint.x, y: currentPoint.y + 1)
+            var currentPath = currentPath
+            currentPath.insert(pointToIndex(point, columns: columns))
+            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
         }
 
         let canGoDown = currentPoint.x + 1 < rows
         ? alphabetValues[matrix[currentPoint.x + 1][currentPoint.y]]! - 1 <= currentLetterValue
         : false
 
-        if canGoDown {
-            points.append(Point(x: currentPoint.x + 1, y: currentPoint.y))
+        if
+            canGoDown,
+            !currentPath.contains(pointToIndex(Point(x: currentPoint.x + 1, y: currentPoint.y), columns: columns)) {
+            let point = Point(x: currentPoint.x + 1, y: currentPoint.y)
+            var currentPath = currentPath
+            currentPath.insert(pointToIndex(point, columns: columns))
+            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
         }
 
-        let canGoUp = currentPoint.x - 1 >= 0
-        ? alphabetValues[matrix[currentPoint.x - 1][currentPoint.y]]! - 1 <= currentLetterValue
-        : false
+        let canGoLeft = currentPoint.y - 1 >= 0
+            ? alphabetValues[matrix[currentPoint.x][currentPoint.y - 1]]! - 1 <= currentLetterValue
+            : false
 
-        if canGoUp {
-            points.append(Point(x: currentPoint.x - 1, y: currentPoint.y))
+        if
+            canGoLeft,
+            !currentPath.contains(pointToIndex(Point(x: currentPoint.x , y: currentPoint.y - 1), columns: columns)) {
+            let point = Point(x: currentPoint.x, y: currentPoint.y - 1)
+            var currentPath = currentPath
+            currentPath.insert(pointToIndex(point, columns: columns))
+            goDown(currentPoint: point, matrix: &matrix, currentPath: currentPath)
         }
-
-        return (points, false)
     }
 
     static func indexToPoint(_ index: Int, columns: Int) -> Point {
@@ -117,8 +141,22 @@ enum AoCDay12 {
         (point.x * columns) + point.y
     }
 
-    static func makeMove() {
+    static func printShortestRoute(_ route: IndexSet, matrix: [[Character]]) {
+        for (r, row) in matrix.enumerated() {
+            var acc = ""
+            for (c, character) in row.enumerated() {
+                let index = pointToIndex(.init(x: r, y: c), columns: columns)
+                acc.append(route.contains(index) ? " \(character) " :" • ")
+            }
 
+            print(acc)
+        }
+    }
+
+    static func printMatrix(_ matrix: [[Character]]) {
+        for r in matrix {
+                print(String(r))
+        }
     }
 
     static let testInput = """
@@ -130,8 +168,48 @@ abdefghi
 """
 
     static let input = """
+abcccccccaaaaaaaaccccccccccaaaaaaccccccaccaaaaaaaccccccaacccccccccaaaaaaaaaaccccccccccccccccccccccccccccccccaaaaa
+abcccccccaaaaaaaaacccccccccaaaaaacccccaaacaaaaaaaaaaaccaacccccccccccaaaaaaccccccccccccccccccccccccccccccccccaaaaa
+abcccccccaaaaaaaaaaccccccccaaaaaacaaacaaaaaaaaaaaaaaaaaaccccccccccccaaaaaaccccccccccccccaaacccccccccccccccccaaaaa
+abaaacccccccaaaaaaacccccccccaaacccaaaaaaaaaaaaaaaaaaaaaaaaacccccccccaaaaaaccccccccccccccaaacccccccccccccccccaaaaa
+abaaaaccccccaaaccccccccccccccccccccaaaaaaaaacaaaacacaaaaaacccccccccaaaaaaaacccccccccccccaaaaccaaacccccccccccaccaa
+abaaaaccccccaaccccaaccccccccccccccccaaaaaaacaaaaccccaaaaaccccccccccccccccacccccccccccccccaaaaaaaaacccccccccccccca
+abaaaaccccccccccccaaaacccccccccaacaaaaaaaacccaaacccaaacaacccccccccccccccccccccccccccciiiiaaaaaaaacccccccccccccccc
+abaaacccccccccccaaaaaacccccccccaaaaaaaaaaacccaaacccccccaacccccccccccaacccccccccccccciiiiiiijaaaaccccccccaaccccccc
+abaaaccccccccccccaaaacccccccccaaaaaaaacaaacccaaaccccccccccccccccccccaaacaaacccccccciiiiiiiijjjacccccccccaaacccccc
+abcccccaacaacccccaaaaaccccccccaaaaaacccccacaacccccccccccccccccccccccaaaaaaaccccccciiiinnnoijjjjjjjjkkkaaaaaaacccc
+abcccccaaaaacccccaacaaccccccccccaaaacccaaaaaaccccccccccccccccccccccccaaaaaaccccccciiinnnnooojjjjjjjkkkkaaaaaacccc
+abccccaaaaacccccccccccccccccccccaccccccaaaaaaaccccccccccccccccccccaaaaaaaaccccccchhinnnnnoooojjooopkkkkkaaaaccccc
+abccccaaaaaaccccccccccccccccccccccccccccaaaaaaacccccccccccccccccccaaaaaaaaacccccchhhnnntttuooooooopppkkkaaaaccccc
+abccccccaaaaccccccccccacccccccccccccccccaaaaaaacccaaccccccccccccccaaaaaaaaaaccccchhhnnttttuuoooooppppkkkaaaaccccc
+abccccccaccccccccccccaaaacaaaccccccccccaaaaaacaaccaacccaaccccccccccccaaacaaacccchhhnnnttttuuuuuuuuupppkkccaaccccc
+abccccccccccccccaaccccaaaaaaaccccccccccaaaaaacaaaaaacccaaaaaaccccccccaaacccccccchhhnnntttxxxuuuuuuupppkkccccccccc
+abcccccccccccccaaaacccaaaaaaacccaccccccccccaaccaaaaaaacaaaaaaccccccccaacccaaccchhhhnnnttxxxxuuyyyuupppkkccccccccc
+abcccccccccccccaaaaccaaaaaaaaacaaacccccccccccccaaaaaaaaaaaaaccccccccccccccaaachhhhmnnnttxxxxxxyyyuvppkkkccccccccc
+abcccccccccccccaaaacaaaaaaaaaaaaaaccccccccccccaaaaaacaaaaaaaccccccccccccccaaaghhhmmmttttxxxxxyyyyvvpplllccccccccc
+abccacccccccccccccccaaaaaaaaaaaaaaccccccccccccaaaaaacccaaaaaacccaacaacccaaaaagggmmmttttxxxxxyyyyvvppplllccccccccc
+SbaaaccccccccccccccccccaaacaaaaaaaacccccccccccccccaacccaaccaacccaaaaacccaaaagggmmmsttxxxEzzzzyyvvvppplllccccccccc
+abaaaccccccccccccccccccaaaaaaaaaaaaacaaccccccccccccccccaaccccccccaaaaaccccaagggmmmsssxxxxxyyyyyyvvvqqqlllcccccccc
+abaaacccccccccccccccccccaaaaaaaaaaaaaaaaacccccccccccccccccccccccaaaaaaccccaagggmmmsssxxxwywyyyyyyvvvqqlllcccccccc
+abaaaaacccccccccccccccccccaacaaaccaaaaaaacccccccccccccccccccccccaaaaccccccaagggmmmssswwwwwyyyyyyyvvvqqqllcccccccc
+abaaaaaccccccccccccccccccccccaaaccccaaaacccccccccccccccccaaccaacccaaccccccccgggmmmmssssswwyywwvvvvvvqqqlllccccccc
+abaaaaacccccccccccccaccacccccaaaccccaaaacccccccccccccccccaaaaaacccccccccccaaggggmllllsssswwywwwvvvvqqqqlllccccccc
+abaaccccccccccccccccaaaaccccccccccccaccaccccccccccccccccccaaaaacccccccccccaaagggglllllssswwwwwrrqqqqqqmmllccccccc
+abaaccccccccccccccccaaaaaccccccaaccaaccccccccccccccccccccaaaaaaccaacccccccaaaaggfffllllsswwwwrrrrqqqqqmmmcccccccc
+abacaaaccccccccccccaaaaaaccccccaaaaaaccccccaacccccccccccaaaaaaaacaaacaaccccaaaaffffflllsrrwwwrrrmmmmmmmmmcccccccc
+abaaaaaccccccccccccaaaaaaccccccaaaaaccccccaaaaccccccccccaaaaaaaacaaaaaaccccaaaaccfffflllrrrrrrkkmmmmmmmccccaccccc
+abaaaacccccccccccccccaaccccccccaaaaaacccccaaaacccccccccccccaaccaaaaaaaccccccccccccffflllrrrrrkkkmmmmmccccccaccccc
+abaaacccccccccccccccccccccccccaaaaaaaaccccaaaacccccccccccccaaccaaaaaaacccccccccccccfffllkrrrkkkkmddddcccccaaacccc
+abaaacccccccccccccccccccccccccaaaaaaaacccccccccccccccccccccccccccaaaaaaccccccccccccfffllkkkkkkkdddddddcaaaaaacccc
+abaaaacccccccccccccccccccccccccccaaccccccccccccccccccccccccccccccaacaaacccccccccccccfeekkkkkkkddddddcccaaaccccccc
+abcaaacccccccccccaaaccccccccaacccaaccccaaaaaccccaaaccccccccccccccaaccccccccccccccccceeeeekkkkdddddccccccaaccccccc
+abccccccccccccccaaaaaaccccccaaacaaccacaaaaaaaccaaaaccccccccccaccaaccccccccccccccccccceeeeeeeedddacccccccccccccccc
+abccccccccccccccaaaaaacccccccaaaaacaaaaaccaaaaaaaacccccccccccaaaaacccccccccccccccccccceeeeeeedaaacccccccccccccaaa
+abccccccaaacccccaaaaacccccccaaaaaacaaaaaaaaaaaaaaaccccccccccccaaaaaccccccccccccccccccccceeeeecaaacccccccccccccaaa
+abccccccaaaccccccaaaaacccccaaaaaaaaccaaaaacaaaaaaccccccccccccaaaaaacccccccccccccccccccccaaaccccaccccccccccccccaaa
+abccccaacaaaaacccaaaaacccccaaaaaaaacaaaaaaaaaaaaaaaccccaaaaccaaaacccccccccccccccccccccccaccccccccccccccccccaaaaaa
+abccccaaaaaaaaccccccccccccccccaaccccaacaaaaaaaaaaaaaaccaaaaccccaaacccccccccccccccccccccccccccccccccccccccccaaaaaa
 """
-
 }
 
 /*
