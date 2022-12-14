@@ -19,6 +19,7 @@
 		8D65C4BB29474C7F00E5BFEB /* Queue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D65C4BA29474C7F00E5BFEB /* Queue.swift */; };
 		8D65C4BF2947530D00E5BFEB /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D65C4BE2947530D00E5BFEB /* Stack.swift */; };
 		8D848678293CDE3D004721AD /* Day4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D848677293CDE3D004721AD /* Day4.swift */; };
+		8D8BAAB52949C96F00F3A19E /* Day13.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D8BAAB42949C96F00F3A19E /* Day13.swift */; };
 		8DC6C63728F4792600080DE1 /* AlgorithmsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC6C63628F4792600080DE1 /* AlgorithmsApp.swift */; };
 		8DC6C63928F4792600080DE1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC6C63828F4792600080DE1 /* ContentView.swift */; };
 		8DC6C63B28F4792700080DE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8DC6C63A28F4792700080DE1 /* Assets.xcassets */; };
@@ -68,6 +69,7 @@
 		8D65C4BA29474C7F00E5BFEB /* Queue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Queue.swift; sourceTree = "<group>"; };
 		8D65C4BE2947530D00E5BFEB /* Stack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		8D848677293CDE3D004721AD /* Day4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day4.swift; sourceTree = "<group>"; };
+		8D8BAAB42949C96F00F3A19E /* Day13.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day13.swift; sourceTree = "<group>"; };
 		8DC6C63328F4792600080DE1 /* Algorithms.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Algorithms.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8DC6C63628F4792600080DE1 /* AlgorithmsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlgorithmsApp.swift; sourceTree = "<group>"; };
 		8DC6C63828F4792600080DE1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				8DF10AC72945DCF900B08C56 /* Day10.swift */,
 				8D65C4B4294633D400E5BFEB /* Day11.swift */,
 				8D65C4B6294733F400E5BFEB /* Day12.swift */,
+				8D8BAAB42949C96F00F3A19E /* Day13.swift */,
 			);
 			path = AdventOfCode2022;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				8DCE45832940EC4A008ECB58 /* Day7.swift in Sources */,
 				8DD487D029277DBA00F3DDBE /* AlgebraicDataTypes3.swift in Sources */,
 				8DFE5F6D293A4A8E00779B91 /* Day2.swift in Sources */,
+				8D8BAAB52949C96F00F3A19E /* Day13.swift in Sources */,
 				8DD487CC29269E4800F3DDBE /* AlgebraicDataTypes1.swift in Sources */,
 				8DC6C63928F4792600080DE1 /* ContentView.swift in Sources */,
 				8D2CB8F329436B5200DC0C5F /* Day9.swift in Sources */,
@@ -530,7 +534,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Algorithms/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
-				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -545,7 +549,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = bbb.Algorithms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -574,6 +578,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = bbb.Algorithms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

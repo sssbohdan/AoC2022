@@ -17,7 +17,7 @@ struct ContentView: View {
         }
         .padding()
         .onAppear {
-            AoCDay12.solve()
+            AoCDay13.solve()
         }
     }
 }
