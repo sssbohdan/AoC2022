@@ -23,21 +23,24 @@ enum AoCDay13 {
         var sum = 0
         for (index, pair) in pairs.enumerated() {
             print("====================== Pair \(index) ======================")
-            print("\(pair.0) vs \(pair.1)")
+            print("\(pair.0)\n\(pair.1)")
             let isCorrect = isPairCorrect(lhs: pair.0, rhs: pair.1)
-            print("isCorrect \(isCorrect.left ?? true)")
-            sum += isCorrect.left ?? true ? index + 1 : 0
+            let bool = isCorrect.left!
+            print("isCorrect \(bool)")
+            sum += bool ? index + 1 : 0
         }
 
+        print("RESULT \(sum)")
         return sum
     }
 
     static func isPairCorrect(lhs: String, rhs: String) -> Either<Bool, Void> {
         if let integerLhs = Int(lhs), let integerRhs = Int(rhs) {
             print("comparing \(integerLhs) and \(integerRhs)")
-            return integerLhs == integerRhs
+            let res: Either<Bool, Void> = integerLhs == integerRhs
             ? .right(())
             : .left(integerLhs < integerRhs)
+            return res
         }
         var lhs = lhs
         var rhs = rhs
@@ -58,11 +61,8 @@ enum AoCDay13 {
             rhs = rhs + "]"
         }
 
-        let bracketlessLhs = String(lhs.dropFirst(1).dropLast(1))
-        let bracketlessRhs = String(rhs.dropFirst(1).dropLast(1))
-
-        let spliitedLhs = bracketlessLhs.split(separator: ",")
-        let splittedRhs = bracketlessRhs.split(separator: ",")
+        let spliitedLhs = splitTopLevel(lhs)
+        let splittedRhs = splitTopLevel(rhs)
         for (l, r) in zip(spliitedLhs, splittedRhs) {
             let result = isPairCorrect(lhs: String(l), rhs: String(r))
 
@@ -72,12 +72,62 @@ enum AoCDay13 {
         }
 
         if spliitedLhs.count == splittedRhs.count {
-            print("same size, equal, no decision")
+            print("equal, no decision")
             return .right(())
         } else {
             print("determind based on size -> \(spliitedLhs.count) vs \(splittedRhs.count) -> \(spliitedLhs.count <= splittedRhs.count)")
             return .left(spliitedLhs.count < splittedRhs.count)
         }
+
+    }
+
+    static func splitTopLevel(_ string: String) -> [String] {
+        assert(string.first == "[")
+        assert(string.last == "]")
+
+        var acc = [String]()
+        let arr = Array(string.dropFirst(1).dropLast(1))
+
+        var skipNext = false
+        var bracketsCounter = 0
+        var currentScopeAcc = ""
+        for (index, char) in arr.enumerated() {
+            guard !skipNext else { skipNext = false; continue; }
+            assert(bracketsCounter >= 0)
+
+            if char == "[" {
+                currentScopeAcc += String(char)
+                bracketsCounter += 1
+            } else if char == "]" {
+                bracketsCounter -= 1
+                currentScopeAcc += String(char)
+
+                if bracketsCounter == 0 {
+                    acc.append(currentScopeAcc)
+                    currentScopeAcc = ""
+                }
+            } else if char == "," {
+                if bracketsCounter != 0 {
+                    currentScopeAcc += String(char)
+                }
+            } else if bracketsCounter == 0 {
+                let _ = Int(String(char))!
+                if Int(String(arr[safe: index + 1] ?? Character("a"))) != nil {
+                    skipNext = true
+                    let str = String(char) + String(arr[index + 1])
+                    let _ = Int(str)!
+                    acc.append(str)
+                } else {
+                    acc.append(String(char))
+                }
+            } else {
+                currentScopeAcc += String(char)
+            }
+        }
+
+        print("split \(string) into \(acc)")
+
+        return acc
 
     }
 

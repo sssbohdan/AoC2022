@@ -91,7 +91,7 @@ enum AoCDay12 {
         let currentPath = routeData.path
         let currentLetter = matrix[currentPoint.x][currentPoint.y]
         let currentLetterValue = alphabetValues[currentLetter] ?? 0
-
+        print("deep \(routeData.path.count)")
         let canGoUp = currentPoint.x - 1 >= 0
         ? alphabetValues[matrix[currentPoint.x - 1][currentPoint.y]]! - 1 <= currentLetterValue
         : false
