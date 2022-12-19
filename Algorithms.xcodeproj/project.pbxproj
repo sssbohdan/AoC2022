@@ -13,6 +13,7 @@
 		8D35CA642905ADF100ECBBB0 /* MonadsExperimentations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D35CA632905ADF100ECBBB0 /* MonadsExperimentations.swift */; };
 		8D40CCA728FCA4DA00DE8657 /* JimAndJokesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D40CCA628FCA4DA00DE8657 /* JimAndJokesTests.swift */; };
 		8D566522294E239600B93B12 /* Array+safe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D566521294E239600B93B12 /* Array+safe.swift */; };
+		8D566524294E260300B93B12 /* Day14.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D566523294E260300B93B12 /* Day14.swift */; };
 		8D63DD0D293FEB400032BB88 /* Day6.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D63DD0C293FEB400032BB88 /* Day6.swift */; };
 		8D65676F293DDCA2000D9B5E /* Day5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D65676E293DDCA2000D9B5E /* Day5.swift */; };
 		8D65C4B5294633D400E5BFEB /* Day11.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D65C4B4294633D400E5BFEB /* Day11.swift */; };
@@ -64,6 +65,7 @@
 		8D35CA632905ADF100ECBBB0 /* MonadsExperimentations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonadsExperimentations.swift; sourceTree = "<group>"; };
 		8D40CCA628FCA4DA00DE8657 /* JimAndJokesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JimAndJokesTests.swift; sourceTree = "<group>"; };
 		8D566521294E239600B93B12 /* Array+safe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+safe.swift"; sourceTree = "<group>"; };
+		8D566523294E260300B93B12 /* Day14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day14.swift; sourceTree = "<group>"; };
 		8D63DD0C293FEB400032BB88 /* Day6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day6.swift; sourceTree = "<group>"; };
 		8D65676E293DDCA2000D9B5E /* Day5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day5.swift; sourceTree = "<group>"; };
 		8D65C4B4294633D400E5BFEB /* Day11.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Day11.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 				8D65C4B4294633D400E5BFEB /* Day11.swift */,
 				8D65C4B6294733F400E5BFEB /* Day12.swift */,
 				8D8BAAB42949C96F00F3A19E /* Day13.swift */,
+				8D566523294E260300B93B12 /* Day14.swift */,
 			);
 			path = AdventOfCode2022;
 			sourceTree = "<group>";
@@ -362,6 +365,7 @@
 				8DD487CC29269E4800F3DDBE /* AlgebraicDataTypes1.swift in Sources */,
 				8DC6C63928F4792600080DE1 /* ContentView.swift in Sources */,
 				8D2CB8F329436B5200DC0C5F /* Day9.swift in Sources */,
+				8D566524294E260300B93B12 /* Day14.swift in Sources */,
 				8D65C4B7294733F400E5BFEB /* Day12.swift in Sources */,
 				8D63DD0D293FEB400032BB88 /* Day6.swift in Sources */,
 				8D35CA642905ADF100ECBBB0 /* MonadsExperimentations.swift in Sources */,

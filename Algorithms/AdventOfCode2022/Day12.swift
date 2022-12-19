@@ -8,182 +8,118 @@
 import Foundation
 
 
-// TODO: Fix with Deykstra alg
+class Path {
+    let point: Point
+    let previousPath: Path?
+    let length: Int
+
+    init(to point: Point, previousPath path: Path? = nil) {
+        self.point = point
+        self.length = 1 + (path?.length ?? 0)
+        self.previousPath = path
+    }
+}
+
+extension Path {
+    var array: [Point] {
+        var result: [Point] = [point]
+        var currentPath = self
+        while let path = currentPath.previousPath {
+            result.append(path.point)
+            currentPath = path
+        }
+        return result
+    }
+}
+
 enum AoCDay12 {
-    struct Point {
-        var x: Int
-        var y: Int
-    }
-
-    struct RouteData {
-        let path: IndexSet
-        let foundPivot: Bool
-        let currentPoint: Point
-    }
-    static let alphabet = "a b c d e f g h i j k l m n o p q r s t u v w x y z"
-    static let alphabetValues: [Character: Int] = [
-        "S": 0,
-        "a": 1,
-        "b": 2,
-        "c": 3,
-        "d": 4,
-        "e": 5,
-        "f": 6,
-        "g": 7,
-        "h": 8,
-        "i": 9,
-        "j": 10,
-        "k": 11,
-        "l": 12,
-        "m": 13,
-        "n": 14,
-        "o": 15,
-        "p": 16,
-        "q": 17,
-        "r": 18,
-        "s": 19,
-        "t": 20,
-        "u": 21,
-        "v": 22,
-        "w": 23,
-        "x": 24,
-        "y": 25,
-        "z": 26,
-        "E": 27
-    ]
-
-    static var rows = 0
-    static var columns = 0
+    static let alphabet = Array("abcdefghijklmnopqrstuvwxyz")
+    static var maxX: Int!
+    static var maxY: Int!
 
     static func solve() -> Int {
-        var matrix = input
+        let matrix = input
             .split(separator: "\n")
-            .map { Array(String($0)) }
-        self.rows = matrix.count
-        self.columns = matrix.first!.count
+            .filter { !$0.isEmpty }
+            .map { Array($0) }
 
-        let flattenRows = matrix.flatMap { $0 }
-        let startIndex = flattenRows.firstIndex(of: "S")!
-        let startPoint = indexToPoint(startIndex, columns: columns)
-        let currentPoint = startPoint
-        var queue = Queue(arr: goDown(
-            .init(path: .init(),
-                  foundPivot: false,
-                  currentPoint: currentPoint),
-            matrix: &matrix))
-        while let r = queue.dequeue() {
-            if r.foundPivot {
-                print("-----------------------")
-                printShortestRoute(r.path, matrix: matrix)
-                print("-----------------------")
-                print("\(r.path.count)")
-                return r.path.count
+        Self.maxX = matrix[0].count
+        Self.maxY = matrix.count
+
+        let startY = matrix.firstIndex(where: { $0.contains("S") })!
+        let startX = matrix[startY].firstIndex(where: { $0 == "S" })!
+
+        let endY = matrix.firstIndex(where: { $0.contains("E") })!
+        let endX = matrix[endY].firstIndex(where: { $0 == "E" })!
+
+        let startPoint = Point(x: startX, y: startY)
+        let endPoint = Point(x: endX, y: endY)
+        let shortestPath = findPath(in: matrix, source: startPoint, destination: endPoint)!
+        return shortestPath.length - 1
+    }
+
+    static func findPath(in matrix: [[Character]], source: Point, destination: Point) -> Path? {
+        var paths: [Path] = [Path(to: source)]
+
+        var visited: Set<Point> = []
+        while !paths.isEmpty {
+            let currentPath = paths.removeFirst()
+            guard !visited.contains(currentPath.point) else {
+                continue
             }
 
-            queue.enqueue(goDown(r, matrix: &matrix))
-        }
-
-        fatalError()
-    }
-
-    static func goDown(_ routeData: RouteData, matrix: inout [[Character]]) -> [RouteData] {
-        let currentPoint = routeData.currentPoint
-        let currentPath = routeData.path
-        let currentLetter = matrix[currentPoint.x][currentPoint.y]
-        let currentLetterValue = alphabetValues[currentLetter] ?? 0
-        print("deep \(routeData.path.count)")
-        let canGoUp = currentPoint.x - 1 >= 0
-        ? alphabetValues[matrix[currentPoint.x - 1][currentPoint.y]]! - 1 <= currentLetterValue
-        : false
-
-       var routes = [RouteData]()
-
-        if
-            canGoUp,
-            !currentPath.contains(pointToIndex(Point(x: currentPoint.x - 1, y: currentPoint.y), columns: columns)) {
-            let point = Point(x: currentPoint.x - 1, y: currentPoint.y)
-            var currentPath = currentPath
-            let letter = matrix[point.x][point.y]
-            currentPath.insert(pointToIndex(point, columns: columns))
-            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
-            routes.append(data)
-        }
-
-        let canGoRight = currentPoint.y + 1 < columns
-        ? alphabetValues[matrix[currentPoint.x][currentPoint.y + 1]]! - 1 <= currentLetterValue
-        : false
-
-        if
-            canGoRight,
-            !currentPath.contains(pointToIndex(Point(x: currentPoint.x, y: currentPoint.y + 1), columns: columns)) {
-            let point = Point(x: currentPoint.x, y: currentPoint.y + 1)
-            var currentPath = currentPath
-            let letter = matrix[point.x][point.y]
-            currentPath.insert(pointToIndex(point, columns: columns))
-            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
-            routes.append(data)
-        }
-
-        let canGoDown = currentPoint.x + 1 < rows
-        ? alphabetValues[matrix[currentPoint.x + 1][currentPoint.y]]! - 1 <= currentLetterValue
-        : false
-
-        if
-            canGoDown,
-            !currentPath.contains(pointToIndex(Point(x: currentPoint.x + 1, y: currentPoint.y), columns: columns)) {
-            let point = Point(x: currentPoint.x + 1, y: currentPoint.y)
-            var currentPath = currentPath
-            let letter = matrix[point.x][point.y]
-            currentPath.insert(pointToIndex(point, columns: columns))
-            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
-            routes.append(data)        }
-
-        let canGoLeft = currentPoint.y - 1 >= 0
-        ? alphabetValues[matrix[currentPoint.x][currentPoint.y - 1]]! - 1 <= currentLetterValue
-        : false
-
-        if
-            canGoLeft,
-            !currentPath.contains(pointToIndex(Point(x: currentPoint.x , y: currentPoint.y - 1), columns: columns)) {
-            let point = Point(x: currentPoint.x, y: currentPoint.y - 1)
-            var currentPath = currentPath
-            let letter = matrix[point.x][point.y]
-            currentPath.insert(pointToIndex(point, columns: columns))
-            let data = RouteData(path: currentPath, foundPivot: letter == "E", currentPoint: point)
-            routes.append(data)
-        }
-
-        return routes
-    }
-
-    static func indexToPoint(_ index: Int, columns: Int) -> Point {
-        let row = (index / columns)
-        let column = (index % columns)
-
-        return .init(x: row, y: column)
-    }
-
-    static func pointToIndex(_ point: Point, columns: Int) -> Int {
-        (point.x * columns) + point.y
-    }
-
-    static func printShortestRoute(_ route: IndexSet, matrix: [[Character]]) {
-        for (r, row) in matrix.enumerated() {
-            var acc = ""
-            for (c, character) in row.enumerated() {
-                let index = pointToIndex(.init(x: r, y: c), columns: columns)
-                acc.append(route.contains(index) ? " \(character) " :" • ")
+            if currentPath.point == destination {
+                return currentPath
             }
 
-            print(acc)
+            visited.insert(currentPath.point)
+
+            for nextPoint in possiblePoints(in: matrix, for: currentPath.point)
+                .filter({ !visited.contains($0) }) {
+                paths.append(Path.init(to: nextPoint, previousPath: currentPath))
+            }
+
+            paths.sort { $0.length < $1.length } // the shortest first
         }
+
+        return nil
     }
 
-    static func printMatrix(_ matrix: [[Character]]) {
-        for r in matrix {
-                print(String(r))
+    static func possiblePoints(in matrix: [[Character]], for point: Point) -> [Point] {
+        var result: [Point] = []
+        let directions: [(Int, Int)] = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+        for (x, y) in directions {
+            guard
+                point.x + x < maxX,
+                point.x + x >= 0,
+                point.y + y < maxY,
+                point.y + y >= 0
+            else { continue }
+
+            result.append(Point(x: point.x + x, y: point.y + y))
         }
+
+        let pointValue = matrix[point.y][point.x]
+
+        if pointValue == "S" { return result }
+
+        let currentValueIdx = alphabet.firstIndex(of: pointValue)!
+
+        let allowedIndices = Array(0...currentValueIdx + 1)
+
+        result = result.filter {
+            var targetPointVal = matrix[$0.y][$0.x]
+            if targetPointVal == "S" { return false }
+            if targetPointVal == "E" {
+                targetPointVal = "z"
+            }
+            let targetPointIdx = alphabet.firstIndex(of: targetPointVal)!
+            return allowedIndices.contains(targetPointIdx)
+        }
+
+        return result
     }
+
 
     static let testInput = """
 Sabqponm
